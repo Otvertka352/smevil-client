@@ -1,19 +1,18 @@
 package ru.otvertka352.smevilclient.impl.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.RestController;
 import ru.otvertka352.smevilclient.api.controller.FileController;
 import ru.otvertka352.smevilclient.impl.service.UploadFileService;
 
-import java.util.Base64;
-
-
+@RestController
 @AllArgsConstructor
 public class FileControllerImpl implements FileController {
 
     private final UploadFileService uploadFileService;
 
     @Override
-    public String uploadFile(Base64 file, String fileType) {
+    public String uploadFile(byte[] file, String fileType) {
         uploadFileService.uploadFile(file, fileType);
 
         return "";

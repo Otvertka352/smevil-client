@@ -2,6 +2,7 @@ package ru.otvertka352.smevilclient.impl.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.otvertka352.smevilclient.impl.handler.impl.XLSXReaderRPZ;
 import ru.otvertka352.smevilclient.impl.service.strategy.UploadFileStrategy;
 import ru.otvertka352.smevilclient.impl.service.strategy.impl.UploadFileStrategyMOBImpl;
 import ru.otvertka352.smevilclient.impl.service.strategy.impl.UploadFileStrategyRKDimpl;
