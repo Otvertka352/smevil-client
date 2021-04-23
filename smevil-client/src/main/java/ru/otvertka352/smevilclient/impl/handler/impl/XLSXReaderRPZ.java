@@ -1,5 +1,6 @@
 package ru.otvertka352.smevilclient.impl.handler.impl;
 
+import org.apache.poi.xssf.usermodel.XSSFName;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -16,6 +17,7 @@ public class XLSXReaderRPZ implements XLSXReader {
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
             XSSFSheet sheet = workbook.getSheetAt(0);
+            final List<XSSFName> allNames = workbook.getAllNames();
             final List<XSSFTable> sheetTables = sheet.getTables();
             System.out.println("sdfsdf");
 
