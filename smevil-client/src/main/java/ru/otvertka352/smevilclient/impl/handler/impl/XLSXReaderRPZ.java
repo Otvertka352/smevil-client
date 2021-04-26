@@ -1,26 +1,32 @@
 package ru.otvertka352.smevilclient.impl.handler.impl;
 
 import org.apache.poi.ss.SpreadsheetVersion;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.*;
 import ru.otvertka352.smevilclient.impl.handler.XLSXReader;
+import ru.otvertka352.smevilclient.impl.util.ExcelUtil;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 
 public class XLSXReaderRPZ implements XLSXReader {
     @Override
     public void read(byte[] file) {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(file);
         try {
-            XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
-            XSSFSheet sheet = workbook.getSheetAt(0);
-            final List<XSSFName> allNames = workbook.getAllNames();
+            final XSSFWorkbook workbook = ExcelUtil.getWorkbook(file);
+            final XSSFSheet sheet = workbook.getSheetAt(0);
             final List<XSSFTable> sheetTables = sheet.getTables();
+
+
+            final List<XSSFName> allNames = workbook.getAllNames();
+            allNames.
+                    stream().
+                    collect(Collectors.toMap(XSSFName::getNameName, field -> ExcelUtil.getFieldValue(field, sheet)));
 
             for (XSSFName field: allNames
                  ) {
@@ -65,4 +71,8 @@ public class XLSXReaderRPZ implements XLSXReader {
             e.printStackTrace();
         }
     }
+
+
+
+
 }
