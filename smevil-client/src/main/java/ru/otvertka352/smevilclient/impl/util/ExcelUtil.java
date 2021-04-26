@@ -15,8 +15,7 @@ public class ExcelUtil {
 
     public XSSFWorkbook getWorkbook(byte[] file) throws IOException {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(file);
-        XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
-        return workbook;
+        return new XSSFWorkbook(inputStream);
     }
 
     public AreaReference getAreaReference(XSSFName field) {
