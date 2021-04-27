@@ -8,71 +8,60 @@ import org.apache.poi.xssf.usermodel.*;
 import ru.otvertka352.smevilclient.impl.handler.XLSXReader;
 import ru.otvertka352.smevilclient.impl.util.ExcelUtil;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
 public class XLSXReaderRPZ implements XLSXReader {
     @Override
     public void read(byte[] file) {
-        try {
-            final XSSFWorkbook workbook = ExcelUtil.getWorkbook(file);
-            final XSSFSheet sheet = workbook.getSheetAt(0);
-            final List<XSSFTable> sheetTables = sheet.getTables();
+
+        final XSSFWorkbook workbook = ExcelUtil.getWorkbook(file);
+        final XSSFSheet sheet = workbook.getSheetAt(0);
+        final List<XSSFTable> sheetTables = sheet.getTables();
 
 
-            final List<XSSFName> allNames = workbook.getAllNames();
-            allNames.
-                    stream().
-                    collect(Collectors.toMap(XSSFName::getNameName, field -> ExcelUtil.getFieldValue(field, sheet)));
+        final List<XSSFName> allNames = workbook.getAllNames();
+        allNames.
+                stream().
+                collect(Collectors.toMap(XSSFName::getNameName, field -> ExcelUtil.getFieldValue(field, sheet)));
 
-            for (XSSFName field: allNames
-                 ) {
-                System.out.println(field.getRefersToFormula());
-                AreaReference areaRef;
-                try {
-                    areaRef = new AreaReference(field.getRefersToFormula(), SpreadsheetVersion.EXCEL2007);
-                }catch (IllegalArgumentException e){
-                    //TODO: Add log record!
-                    continue;
-                }
-
-                if (areaRef.isSingleCell()){
-                    CellReference cellRef = areaRef.getFirstCell();
-                    XSSFRow row = sheet.getRow(cellRef.getRow());
-                    XSSFCell cell = row.getCell(cellRef.getCol());
-                    CellType cellType = cell.getCellType();
-                    if (cellType == CellType.STRING){
-                        System.out.println(cell.getStringCellValue());
-                    }
-                }
-
-
+        for (XSSFName field : allNames
+        ) {
+            System.out.println(field.getRefersToFormula());
+            AreaReference areaRef;
+            try {
+                areaRef = new AreaReference(field.getRefersToFormula(), SpreadsheetVersion.EXCEL2007);
+            } catch (IllegalArgumentException e) {
+                //TODO: Add log record!
+                continue;
             }
 
-            String testRefFormula = allNames.get(0).getRefersToFormula();
-            AreaReference areaRef = new AreaReference(testRefFormula, SpreadsheetVersion.EXCEL2007);
-
-            if (areaRef.isSingleCell()){
+            if (areaRef.isSingleCell()) {
                 CellReference cellRef = areaRef.getFirstCell();
                 XSSFRow row = sheet.getRow(cellRef.getRow());
                 XSSFCell cell = row.getCell(cellRef.getCol());
-                System.out.println('t');
+                CellType cellType = cell.getCellType();
+                if (cellType == CellType.STRING) {
+                    System.out.println(cell.getStringCellValue());
+                }
             }
 
 
-            System.out.println(testRefFormula);
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
+        String testRefFormula = allNames.get(0).getRefersToFormula();
+        AreaReference areaRef = new AreaReference(testRefFormula, SpreadsheetVersion.EXCEL2007);
+
+        if (areaRef.isSingleCell()) {
+            CellReference cellRef = areaRef.getFirstCell();
+            XSSFRow row = sheet.getRow(cellRef.getRow());
+            XSSFCell cell = row.getCell(cellRef.getCol());
+            System.out.println('t');
+        }
+
+        System.out.println(testRefFormula);
     }
-
-
 
 
 }
