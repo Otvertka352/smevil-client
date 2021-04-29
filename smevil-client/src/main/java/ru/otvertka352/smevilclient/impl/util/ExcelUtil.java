@@ -13,19 +13,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @UtilityClass
 public class ExcelUtil {
-
-    private static Map<CellType, Supplier<FieldValue>> cellsTypes;
-    static {
-        cellsTypes = new HashMap<>();
-        cellsTypes.put(CellType.STRING, () -> new FieldValue<String>("22"));
-        cellsTypes.put(CellType.NUMERIC, () -> new FieldValue<Integer>(22));
-        cellsTypes.put(CellType.BLANK, () -> new FieldValue<String>(""));
-    }
-
     public static XSSFWorkbook getWorkbook(byte[] file){
         ByteArrayInputStream inputStream = new ByteArrayInputStream(file);
         try {
@@ -36,32 +28,29 @@ public class ExcelUtil {
         }
     }
 
-    public static AreaReference getAreaReference(XSSFName field) {
+    public static Optional<AreaReference> getAreaReference(XSSFName field) {
         try {
-            return new AreaReference(field.getRefersToFormula(), SpreadsheetVersion.EXCEL2007);
+            return Optional.of(new AreaReference(field.getRefersToFormula(), SpreadsheetVersion.EXCEL2007));
         } catch (IllegalArgumentException e) {
-            return null;
+            return Optional.empty();
         }
     }
 
-    public static FieldValue getFieldValue(XSSFName field, XSSFSheet sheet) {
-        final AreaReference areaReference = getAreaReference(field);
+    public static Optional<XSSFCell> getXssfCell(XSSFName field, XSSFSheet sheet) {
 
-        FieldValue value = null;
-        if (areaReference.isSingleCell()) {
-            XSSFCell cell = getXssfCell(sheet, areaReference);
-            final CellType cellType = cell.getCellType();
-            value = cellsTypes.get(cellType).get();
+        final Optional<AreaReference> areaReference = getAreaReference(field);
+
+        Optional<XSSFCell> cell = Optional.empty();
+
+        if (areaReference.isPresent() && areaReference.get().isSingleCell()) {
+            CellReference cellRef = areaReference.get().getFirstCell();
+            XSSFRow row = sheet.getRow(cellRef.getRow());
+            cell = Optional.of(row.getCell(cellRef.getCol()));
         }
-        return value;
-    }
-
-    private static XSSFCell getXssfCell(XSSFSheet sheet, AreaReference areaReference) {
-        CellReference cellRef = areaReference.getFirstCell();
-        XSSFRow row = sheet.getRow(cellRef.getRow());
-        XSSFCell cell = row.getCell(cellRef.getCol());
         return cell;
     }
+
+
 }
 
 
