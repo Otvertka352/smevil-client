@@ -17,4 +17,9 @@ public class FileControllerImpl implements FileController {
 
         return "";
     }
+
+    @Override
+    public String home() {
+        return "home";
+    }
 }

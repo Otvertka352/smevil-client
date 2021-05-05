@@ -7,4 +7,6 @@ public interface FileController {
     @PostMapping("/uploadFile")
     @ResponseBody String uploadFile(@RequestBody byte[] file, @RequestParam String fileType);
 
+    @GetMapping("/")
+    @ResponseBody String home();
 }
